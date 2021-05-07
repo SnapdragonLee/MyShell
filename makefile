@@ -1,12 +1,14 @@
-objects = main.o definition_func.o
+all: MyShell++
 
-stupidShell:$(objects)
-	gcc -o stupidShell $(objects) -g -lpthread
+objects = Main.o Func_Definition.o
+
+MyShell++:$(objects)
+	gcc -o MyShell++ $(objects) -g -lpthread
 
 
-main.o: stupidShell.h
+main.o: ShellCMD.h
 
-definition.o: stupidShell.h
+definition.o: ShellCMD.h
 
 
 .PHONY:clean
