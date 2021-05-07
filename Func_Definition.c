@@ -223,6 +223,9 @@ int mys_builtinCmd(void) {
                 break;
 
             case 6:
+                break;
+
+            case 7:
                 break;*/
 
         default:
