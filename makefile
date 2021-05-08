@@ -6,12 +6,12 @@ MyShell++:$(objects)
 	gcc -o MyShell++ $(objects) -g -lpthread
 
 
-main.o: ShellCMD.h
+Main.o: ShellCMD.h
 
-definition.o: ShellCMD.h
+Func_Definition.o: ShellCMD.h
 
 
 .PHONY:clean
 
 clean:
-	rm $(objects)
+	rm -rf *~ *.o

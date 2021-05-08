@@ -43,7 +43,7 @@
 typedef struct CMD_STRUCT {
     char *cmd[CMD_LENGTH];
     char cmdStr[CMD_LENGTH * PARA_MAX];
-    char nextSign; // '|\0\0', '>\0\0', '<\0\0', '>>\0'
+    char nextSign[2]; // '|\0\0', '>\0\0', '<\0\0', '>>\0'
 } cmdStruct;
 
 /* Command stream including N complete commands and pointer */
@@ -54,6 +54,13 @@ typedef struct CMD_STREAM_STRUCT {
 
 /* One command line */
 extern cmdStreamStruct *stream;
+
+/* Command reserve list */
+typedef struct command {
+    char instruct[CMD_LENGTH * PARA_MAX];
+    int order;
+    struct command *next;
+} command;
 
 
 /* One command line */
@@ -74,6 +81,10 @@ int mys_help(void);
 /* Exit MyShell++ */
 int mys_exit(void);
 
+/* Search history command */
+int mys_history(void);
+
+
 /* Print prompt */
 int mys_prompt(void);
 
@@ -92,15 +103,15 @@ int mys_analyzeCmd(char *line);
 /* Execute internal command by define*/
 int mys_builtinCmd(void);
 
+
 /* Execute external command with recursion.
  * What’s more , builtin commands don’t support pipe and redirection.*/
 int mys_execute(void);
 
-
 /* Clear current cmdStruct */
 int mys_clearCmdStream(cmdStreamStruct *stream);
 
-/* Print 'command () not found' messages */
+/* Print 'Command () not found' messages */
 int mys_commandFound(int localPtr);
 
 #endif

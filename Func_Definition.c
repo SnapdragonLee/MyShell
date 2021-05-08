@@ -16,13 +16,19 @@
 char dirPrompt[50];
 
 /* List of builtIn command */
-char *builtInCmd[] = {"cd", "help", "exit"};
+char *builtInCmd[] = {"cd", "help", "exit", "history"};
 
 /* Shared memory id */
 int shm_id;
 
 /* Shared memory buffer */
 char *shm_buff;
+
+/* List head of list */
+command *head = NULL;
+
+/* Command before */
+command *pre = NULL;
 
 int mys_welcome(void) { // finish
     printf("Welcome to use MyShell++!!!\n");
@@ -85,16 +91,30 @@ int mys_cd(void) { // finish
 int mys_help(void) { // updating
     printf("\n"
            "***************************************************************\n"
-           "Latest Version Detail: version 1.0.1\n"
-           "Add pipe support from external command.\n"
-           "Pipe support included '|', '>', '<'.\n\n"
-           "Previous Version Detail: version 1.0.04\n"
+           "Latest Version Detail: \n"
+           "version 1.0.22\n"
+           "Add a internal Command: history.\n"
+           "Fix some known problems.\n"
+
+           "\n\n"
+           "Previous Version Detail: \n"
+
+           "version 1.0.2\n"
+           "Add IO redirection of '>', '<', '>>'.\n"
+           "Fix problem caused by redirection '<' and pipe exiting together.\n"
+           "Fix some known problems.\n"
+
+           "version 1.0.1\n"
+           "Add pipe support from external command.\n\n"
+
+           "version 1.0.04\n"
            "Add commands from internal or external.\n"
            "Internal Command included: cd, help, exit.\n"
            "***************************************************************\n\n"
-           "The shell commands are defined externally.  Type `help' to see this info.\n\n"
+
+           "The shell commands are defined externally. Type `help' to see this info.\n\n"
            "Details of MyShell++: \n"
-           "MyShell++, version 1.0.1\n"
+           "MyShell++, version 1.0.22\n"
            "Last Update: 2021.5.8\n"
            "Author: LD_ROOM\n"
            "Contact: 13671390321\n"
@@ -103,11 +123,29 @@ int mys_help(void) { // updating
     return 0;
 }
 
+int mys_history(void) { // finish
+    command *temp = head;
+    while (temp->next != NULL) {
+        printf("%d %s", temp->order, temp->instruct);
+        temp = temp->next;
+    }
+
+    return 0;
+}
 
 int mys_exit(void) { // finish
     shmdt(shm_buff);
     shmctl(shm_id, IPC_RMID, 0);
+
+    command *temp = head;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+
     printf("logout from MyShell++ ...\n");
+
     exit(EXIT_SUCCESS);
 }
 
@@ -133,6 +171,23 @@ int mys_readLine(char *line) { // finish
         }
     }
 
+    line[pos] = '\0';
+    if (head == NULL) {
+        head = (command *) malloc(sizeof(command));
+        strcpy(head->instruct, line);
+        head->order = 1;
+        head->next = NULL;
+        pre = head;
+    } else {
+        command *one = (command *) malloc(sizeof(command));
+        pre->next = one;
+        strcpy(one->instruct, line);
+        one->order = pre->order + 1;
+        one->next = NULL;
+        pre = one;
+    }
+
+    //printf("%s", pre->instruct);
     return 0;
 }
 
@@ -169,7 +224,7 @@ int mys_splitStr(char *resultArr[], char *str, char *split) { // finish
 }
 
 
-int mys_analyzeCmd(char *line) { // updating
+int mys_analyzeCmd(char *line) {
     int i, j = 0;
     int lastPosition = 0;
     cmdStruct *curCommand;
@@ -179,9 +234,14 @@ int mys_analyzeCmd(char *line) { // updating
             curCommand = &stream->cmdStream[j];
             mys_subStr(curCommand->cmdStr, line, lastPosition, i - 1);
             mys_splitStr(curCommand->cmd, curCommand->cmdStr, " ");
-            curCommand->nextSign = line[i];
+            curCommand->nextSign[0] = line[i];
             lastPosition = i + 1;
             j++;
+        }
+        if ('>' == line[i] && '>' == line[i + 1]) {
+            curCommand->nextSign[1] = '>';
+            i++;
+            lastPosition++;
         }
     }
 
@@ -195,7 +255,7 @@ int mys_analyzeCmd(char *line) { // updating
 int mys_builtinCmd(void) { // updating
     int i;
 
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 4; i++) {
         if (0 == strcmp(builtInCmd[i], stream->cmdStream[0].cmd[0])) {
             break;
         }
@@ -214,10 +274,11 @@ int mys_builtinCmd(void) { // updating
             mys_exit();
             break;
 
-            /*case 3:
-                break;
+        case 3:
+            mys_history();
+            break;
 
-            case 4:
+            /*case 4:
                 break;
 
             case 5:
@@ -236,13 +297,13 @@ int mys_builtinCmd(void) { // updating
     return 0;
 }
 
-
+/* Define for pipe */
 int fd[2];
 
 int mys_execute() {
     int pid, localPtr;
 
-    if ('|' == stream->cmdStream[stream->cmdPtr].nextSign) {
+    if (0 == strcmp("|", stream->cmdStream[stream->cmdPtr].nextSign)) {
         localPtr = stream->cmdPtr;
         pipe(fd);
 
@@ -269,17 +330,20 @@ int mys_execute() {
             exit(EXIT_SUCCESS);
         }
 
-    } else if ('<' == stream->cmdStream[stream->cmdPtr].nextSign) {
+    } else if (0 == strcmp("<", stream->cmdStream[stream->cmdPtr].nextSign)) {
         localPtr = stream->cmdPtr;
         char fileName[50];
 
         strcpy(fileName, stream->cmdStream[localPtr + 1].cmd[0]);
         freopen(fileName, "r", stdin);
 
-        if ('>' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
+        if (0 == strcmp(">", stream->cmdStream[stream->cmdPtr + 1].nextSign)) {
             strcpy(fileName, stream->cmdStream[localPtr + 2].cmd[0]);
             freopen(fileName, "w", stdout);
-        } else if ('|' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
+        } else if (0 == strcmp(">>", stream->cmdStream[stream->cmdPtr + 1].nextSign)) {
+            strcpy(fileName, stream->cmdStream[localPtr + 2].cmd[0]);
+            freopen(fileName, "a", stdout);
+        } else if (0 == strcmp("|", stream->cmdStream[stream->cmdPtr + 1].nextSign)) {
             pipe(fd);
             pid = fork();
 
@@ -308,7 +372,7 @@ int mys_execute() {
 
         exit(EXIT_SUCCESS);
 
-    } else if ('>' == stream->cmdStream[stream->cmdPtr].nextSign) {
+    } else if (0 == strcmp(">", stream->cmdStream[stream->cmdPtr].nextSign)) {
         localPtr = stream->cmdPtr;
         char fileName[50];
 
@@ -317,9 +381,21 @@ int mys_execute() {
         mys_commandFound(localPtr);
 
         exit(EXIT_SUCCESS);
+
+    } else if (0 == strcmp(">>", stream->cmdStream[stream->cmdPtr].nextSign)) {
+        localPtr = stream->cmdPtr;
+        char fileName[50];
+
+        strcpy(fileName, stream->cmdStream[localPtr + 1].cmd[0]);
+        freopen(fileName, "a", stdout);
+        mys_commandFound(localPtr);
+
+        exit(EXIT_SUCCESS);
+
     } else {
         localPtr = stream->cmdPtr;
         mys_commandFound(localPtr);
+
         exit(EXIT_SUCCESS);
     }
 }

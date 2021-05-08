@@ -35,7 +35,7 @@ int main() {
             }
 
             waitpid(pid, NULL, 0);
-            sleep((unsigned int) 0.10);
+            sleep((unsigned int) 0.1);
         }
 
         mys_clearCmdStream(stream);
