@@ -93,7 +93,7 @@ int mys_help(void) { // updating
            "***************************************************************\n"
            "Latest Version Detail: \n\n"
            "version 1.0.25\n"
-           "Add README.md and simplify the running way. \n"
+           "Add README.md and complete some kinds of this project. \n"
 
 
            "\n\n"
