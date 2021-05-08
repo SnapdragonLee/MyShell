@@ -176,7 +176,7 @@ int mys_readLine(char *line) { // finish
     }
 
     if (0 == strcmp(line, "\n")) {
-        return -1;
+        return 1;
     }
 
     line[pos] = '\0';
