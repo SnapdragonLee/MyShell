@@ -247,8 +247,7 @@ int mys_execute() {
         pipe(fd);
 
         pid = fork();
-        if (0 == pid)//execute next command in child process
-        {
+        if (0 == pid) {
             stream->cmdPtr++;
 
             dup2(fd[0], 0);//redirect standard input to pipe(read)
@@ -256,9 +255,9 @@ int mys_execute() {
             close(fd[1]);
 
             mys_execute();
+
             exit(EXIT_SUCCESS);
-        } else//execute current command in current process
-        {
+        } else {
             signal(SIGCHLD, SIG_IGN);
 
             dup2(fd[1], 1);
@@ -269,6 +268,7 @@ int mys_execute() {
 
             exit(EXIT_SUCCESS);
         }
+
     } else if ('<' == stream->cmdStream[stream->cmdPtr].nextSign) {
         localPtr = stream->cmdPtr;
         char fileName[50];
@@ -279,9 +279,7 @@ int mys_execute() {
         if ('>' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
             strcpy(fileName, stream->cmdStream[localPtr + 2].cmd[0]);
             freopen(fileName, "w", stdout);
-        }
-
-        if ('|' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
+        } else if ('|' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
             pipe(fd);
             pid = fork();
 
@@ -295,6 +293,7 @@ int mys_execute() {
                 mys_execute();
 
                 exit(EXIT_SUCCESS);
+
             } else {
 
                 signal(SIGCHLD, SIG_IGN);
@@ -302,11 +301,9 @@ int mys_execute() {
                 dup2(fd[1], 1);
                 close(fd[0]);
                 close(fd[1]);
-
-                mys_commandFound(localPtr);
             }
-
         }
+
         mys_commandFound(localPtr);
 
         exit(EXIT_SUCCESS);
@@ -316,7 +313,7 @@ int mys_execute() {
         char fileName[50];
 
         strcpy(fileName, stream->cmdStream[localPtr + 1].cmd[0]);
-        freopen(fileName, "w", stdout);//redirect stdout to fileName
+        freopen(fileName, "w", stdout);
         mys_commandFound(localPtr);
 
         exit(EXIT_SUCCESS);

@@ -27,7 +27,7 @@
 #define SHM_MEM_SIZE 2048 * 16
 
 /* The size of the cmdStream */
-#define STREAM_SZ 12
+#define STREAM_SZ 8
 
 /* The max_length of a simple cmd ( = the amount of parameters + 1 ) */
 #define CMD_LENGTH 32
@@ -43,7 +43,7 @@
 typedef struct CMD_STRUCT {
     char *cmd[CMD_LENGTH];
     char cmdStr[CMD_LENGTH * PARA_MAX];
-    char nextSign; // '|', '>', '<'
+    char nextSign; // '|\0\0', '>\0\0', '<\0\0', '>>\0'
 } cmdStruct;
 
 /* Command stream including N complete commands and pointer */
