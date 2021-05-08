@@ -8,7 +8,7 @@ Unix System Big Assignment, BUAA 2021 Spring.
 
 ## Features:
 
-- Standard I/O redirection : >, >>, <
+- Standard I/O redirection : \>, \>\>, \<
 - Pipe support
 - Command with builtin commands : cd, help, exit, history.
 - ……(Maybe add more features)
