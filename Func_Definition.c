@@ -91,22 +91,25 @@ int mys_cd(void) { // finish
 int mys_help(void) { // updating
     printf("\n"
            "***************************************************************\n"
-           "Latest Version Detail: \n"
-           "version 1.0.23\n"
-           "Fix some known unexpected exception when a command is normal. \n"
+           "Latest Version Detail: \n\n"
+           "version 1.0.24\n"
+           "Fix problem caused by NULL command. \n"
 
 
            "\n\n"
-           "Previous Version Detail: \n"
+           "Previous Version Detail: \n\n"
+
+           "version 1.0.23\n"
+           "Fix some known unexpected exception when a command is normal. \n\n"
 
            "version 1.0.22\n"
            "Add a internal Command: history.\n"
-           "Fix some known problems.\n"
+           "Fix some known problems.\n\n"
 
            "version 1.0.2\n"
            "Add IO redirection of '>', '<', '>>'.\n"
            "Fix problem caused by redirection '<' and pipe exiting together.\n"
-           "Fix some known problems.\n"
+           "Fix some known problems.\n\n"
 
            "version 1.0.1\n"
            "Add pipe support from external command.\n\n"
@@ -118,7 +121,7 @@ int mys_help(void) { // updating
 
            "The shell commands are defined externally. Type `help' to see this info.\n\n"
            "Details of MyShell++: \n"
-           "MyShell++, version 1.0.23\n"
+           "MyShell++, version 1.0.24\n"
            "Last Update: 2021.5.8\n"
            "Author: LD_ROOM\n"
            "Contact: 13671390321\n"
@@ -174,12 +177,12 @@ int mys_readLine(char *line) { // finish
             break;
         }
     }
+    line[pos] = '\0';
 
     if (0 == strcmp(line, "\n")) {
-        return 1;
+        return -1;
     }
 
-    line[pos] = '\0';
     if (head == NULL) {
         head = (command *) malloc(sizeof(command));
         strcpy(head->instruct, line);

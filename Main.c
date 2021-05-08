@@ -25,7 +25,7 @@ int main() {
     while (1) {
         mys_prompt();
 
-        if(mys_readLine(line) == 1) {
+        if(mys_readLine(line) == -1) {
             continue;
         }
 
