@@ -92,12 +92,15 @@ int mys_help(void) { // updating
     printf("\n"
            "***************************************************************\n"
            "Latest Version Detail: \n\n"
-           "version 1.0.24\n"
-           "Fix problem caused by NULL command. \n"
+           "version 1.0.25\n"
+           "Add README.md and simplify the running way. \n"
 
 
            "\n\n"
            "Previous Version Detail: \n\n"
+
+           "version 1.0.24\n"
+           "Fix problem caused by NULL command. \n"
 
            "version 1.0.23\n"
            "Fix some known unexpected exception when a command is normal. \n\n"

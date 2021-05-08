@@ -55,6 +55,7 @@ typedef struct CMD_STREAM_STRUCT {
 /* One command line */
 extern cmdStreamStruct *stream;
 
+
 /* Command reserve list */
 typedef struct command {
     char instruct[CMD_LENGTH * PARA_MAX];
