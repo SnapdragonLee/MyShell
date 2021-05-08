@@ -24,13 +24,13 @@ int shm_id;
 /* Shared memory buffer */
 char *shm_buff;
 
-int mys_welcome(void) {
+int mys_welcome(void) { // finish
     printf("Welcome to use MyShell++!!!\n");
 
     return 0;
 }
 
-int mys_shm_init(void) {
+int mys_shm_init(void) { // finish
     int key;
     key = ftok("Myshell++", 1);
     shm_id = shmget(key, SHM_MEM_SIZE, IPC_CREAT | 0666);
@@ -86,10 +86,11 @@ int mys_help(void) { // updating
     printf("\n"
            "***************************************************************\n"
            "Latest Version Detail: version 1.0.1\n"
-           "Add pipe support from external command\n\n"
+           "Add pipe support from external command.\n"
+           "Pipe support included '|', '>', '<'.\n\n"
            "Previous Version Detail: version 1.0.04\n"
-           "Add commands from internal or external\n"
-           "Internal Command included: cd, help, exit\n"
+           "Add commands from internal or external.\n"
+           "Internal Command included: cd, help, exit.\n"
            "***************************************************************\n\n"
            "The shell commands are defined externally.  Type `help' to see this info.\n\n"
            "Details of MyShell++: \n"
@@ -152,7 +153,7 @@ int mys_subStr(char *resultStr, char *str, int origin, int end) { // finish
 }
 
 
-int mys_splitStr(char *resultArr[], char *str, char *split) {
+int mys_splitStr(char *resultArr[], char *str, char *split) { // finish
     int position = 0;
     char *token;
 
@@ -168,7 +169,7 @@ int mys_splitStr(char *resultArr[], char *str, char *split) {
 }
 
 
-int mys_analyzeCmd(char *line) {
+int mys_analyzeCmd(char *line) { // updating
     int i, j = 0;
     int lastPosition = 0;
     cmdStruct *curCommand;
@@ -191,7 +192,7 @@ int mys_analyzeCmd(char *line) {
     return 0;
 }
 
-int mys_builtinCmd(void) {
+int mys_builtinCmd(void) { // updating
     int i;
 
     for (i = 0; i < 3; i++) {
@@ -246,7 +247,6 @@ int mys_execute() {
         pipe(fd);
 
         pid = fork();
-
         if (0 == pid)//execute next command in child process
         {
             stream->cmdPtr++;
@@ -261,7 +261,7 @@ int mys_execute() {
         {
             signal(SIGCHLD, SIG_IGN);
 
-            dup2(fd[1], 1);//redirect standard output to pipe(write)
+            dup2(fd[1], 1);
             close(fd[0]);
             close(fd[1]);
 
@@ -271,34 +271,35 @@ int mys_execute() {
         }
     } else if ('<' == stream->cmdStream[stream->cmdPtr].nextSign) {
         localPtr = stream->cmdPtr;
-        char fileName[20];
+        char fileName[50];
 
         strcpy(fileName, stream->cmdStream[localPtr + 1].cmd[0]);
-        freopen(fileName, "r", stdin);//redirect stdin to fileName
+        freopen(fileName, "r", stdin);
 
         if ('>' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
             strcpy(fileName, stream->cmdStream[localPtr + 2].cmd[0]);
-            freopen(fileName, "w", stdout);//redirect stdout to fileName
+            freopen(fileName, "w", stdout);
         }
+
         if ('|' == stream->cmdStream[stream->cmdPtr + 1].nextSign) {
             pipe(fd);
             pid = fork();
-            if (0 == pid)//execute next command in child process
-            {
+
+            if (0 == pid) {
                 stream->cmdPtr += 2;
 
-                dup2(fd[0], 0);//redirect standard input to pipe(read)
+                dup2(fd[0], 0);
                 close(fd[0]);
                 close(fd[1]);
 
                 mys_execute();
+
                 exit(EXIT_SUCCESS);
-            } else//execute current command in current process
-            {
+            } else {
 
                 signal(SIGCHLD, SIG_IGN);
 
-                dup2(fd[1], 1);//redirect stdout to pipe(write)
+                dup2(fd[1], 1);
                 close(fd[0]);
                 close(fd[1]);
 
@@ -312,7 +313,7 @@ int mys_execute() {
 
     } else if ('>' == stream->cmdStream[stream->cmdPtr].nextSign) {
         localPtr = stream->cmdPtr;
-        char fileName[20];
+        char fileName[50];
 
         strcpy(fileName, stream->cmdStream[localPtr + 1].cmd[0]);
         freopen(fileName, "w", stdout);//redirect stdout to fileName
@@ -326,7 +327,7 @@ int mys_execute() {
     }
 }
 
-int mys_clearCmdStream(cmdStreamStruct *streamField) {
+int mys_clearCmdStream(cmdStreamStruct *streamField) { // finish
     memset(streamField, 0, sizeof(cmdStreamStruct));
 
     return 0;

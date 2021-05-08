@@ -27,10 +27,10 @@
 #define SHM_MEM_SIZE 2048 * 16
 
 /* The size of the cmdStream */
-#define STREAM_SZ 10
+#define STREAM_SZ 12
 
 /* The max_length of a simple cmd ( = the amount of parameters + 1 ) */
-#define CMD_LENGTH 10
+#define CMD_LENGTH 32
 
 /* The max_length of a parameter */
 #define PARA_MAX 64
