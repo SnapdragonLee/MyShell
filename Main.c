@@ -24,9 +24,11 @@ int main() {
 
     while (1) {
         mys_prompt();
+
         if(mys_readLine(line) == -1) {
             continue;
         }
+
         mys_analyzeCmd(line);
 
         if (0 != mys_builtinCmd()) {
