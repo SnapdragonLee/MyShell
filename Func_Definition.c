@@ -92,12 +92,15 @@ int mys_help(void) { // updating
     printf("\n"
            "***************************************************************\n"
            "Latest Version Detail: \n"
-           "version 1.0.22\n"
-           "Add a internal Command: history.\n"
-           "Fix some known problems.\n"
+           "version 1.0.23\n"
+           "Fix some known unexpected exception when a command is normal. \n"
 
            "\n\n"
            "Previous Version Detail: \n"
+
+           "version 1.0.22\n"
+           "Add a internal Command: history.\n"
+           "Fix some known problems.\n"
 
            "version 1.0.2\n"
            "Add IO redirection of '>', '<', '>>'.\n"
@@ -114,7 +117,7 @@ int mys_help(void) { // updating
 
            "The shell commands are defined externally. Type `help' to see this info.\n\n"
            "Details of MyShell++: \n"
-           "MyShell++, version 1.0.22\n"
+           "MyShell++, version 1.0.23\n"
            "Last Update: 2021.5.8\n"
            "Author: LD_ROOM\n"
            "Contact: 13671390321\n"
@@ -169,6 +172,10 @@ int mys_readLine(char *line) { // finish
         if (c == '\n') {
             break;
         }
+    }
+
+    if (0 == strcmp(line, "\n")) {
+        return -1;
     }
 
     line[pos] = '\0';

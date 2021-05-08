@@ -24,7 +24,9 @@ int main() {
 
     while (1) {
         mys_prompt();
-        mys_readLine(line);
+        if(mys_readLine(line) == -1) {
+            continue;
+        }
         mys_analyzeCmd(line);
 
         if (0 != mys_builtinCmd()) {
@@ -35,7 +37,7 @@ int main() {
             }
 
             waitpid(pid, NULL, 0);
-            sleep((unsigned int) 0.1);
+            sleep((unsigned int) 0.2);
         }
 
         mys_clearCmdStream(stream);
