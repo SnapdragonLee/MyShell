@@ -26,7 +26,7 @@ You can compile and run **manually** by following :
 
 
 
-**Clean** : Type `make clean` to clean all `*.o` file, but remain MyShell++. To remove it, please type `rm` instruct.
+**Clean** : Type `make clean` to clean all `*.o` file, but remain `MyShell++`. To remove it, please type `rm` command.
 
 
 
