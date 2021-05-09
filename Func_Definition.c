@@ -93,7 +93,7 @@ int mys_help(void) { // updating
            "***************************************************************\n"
            "Latest Version Detail: \n\n"
            "version 1.0.25\n"
-           "Add README.md and complete some kinds of this project. \n"
+           "Add README.md and complete some undone work of this project. \n"
 
 
            "\n\n"
@@ -124,7 +124,7 @@ int mys_help(void) { // updating
 
            "The shell commands are defined externally. Type `help' to see this info.\n\n"
            "Details of MyShell++: \n"
-           "MyShell++, version 1.0.24\n"
+           "MyShell++, version 1.0.25\n"
            "Last Update: 2021.5.8\n"
            "Author: LD_ROOM\n"
            "Contact: 13671390321\n"
