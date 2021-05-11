@@ -34,7 +34,7 @@ Or you can write shell script to run this project, etc.
 
 
 
-## COMTACT WITH ME
+## CONTACT WITH ME
 
 If you have any question, you can contact with me : 
 
